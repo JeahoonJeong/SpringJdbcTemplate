@@ -8,49 +8,29 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-public class CustomDAO {
+import org.springframework.jdbc.core.JdbcTemplate;
+
+public class CustomDAO2 {
 	
-	private DataSource dataSource;
+	private JdbcTemplate jdbcTemplate;
 	
-	public void setDataSource(DataSource dataSource) {
-		this.dataSource = dataSource;
+	public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+		this.jdbcTemplate = jdbcTemplate;
 	}
 	
 	Connection conn = null;
 	
-	public int insertDate(CustomDTO dto) {
+	public void insertDate(CustomDTO dto) {
 		
-		int result = 0;
-		PreparedStatement pstmt = null;
-		String sql;
+		StringBuilder sql = new StringBuilder();
 		
-		try {
-			
-			conn = dataSource.getConnection();
-			sql = "insert into custom (id,name,age)";
-			sql +="values(?,?,?)";
-			
-			pstmt = conn.prepareStatement(sql);
-			
-			pstmt.setInt(1, dto.getId());
-			pstmt.setString(2, dto.getName());
-			pstmt.setInt(3, dto.getAge());
-			
-			result = pstmt.executeUpdate();
-			
-			pstmt.close();
-			conn.close();
+		sql.append("insert into custom(id,name,age) values(?,?,?)");
 		
-			
-		} catch (Exception e) {
-			// TODO: handle exception
-			System.out.println(e.toString());
-		}
+		jdbcTemplate.update(sql.toString(),dto.getId(),dto.getName(),dto.getAge());
 		
-		return result;
 	}
 	
-	public int updateData(CustomDTO dto) {
+	/*public int updateData(CustomDTO dto) {
 		
 		int result = 0;
 		PreparedStatement pstmt = null;
@@ -83,45 +63,13 @@ public class CustomDAO {
 	
 	public List<CustomDTO> getLists(){
 		
-		List<CustomDTO> lists = new ArrayList<CustomDTO>();
+		StringBuilder sql = new StringBuilder();
 		
-		PreparedStatement pstmt = null;
-		String sql = "";
-		ResultSet rs = null;
+		sql.append("select id,name,age from custom");
 		
-		try {
+		jdbcTemplate.execute(sql.toString());
 			
-			conn = dataSource.getConnection();
-			
-			sql = "select id,name,age from custom";
-			
-			pstmt = conn.prepareStatement(sql);
-			
-			rs = pstmt.executeQuery();
-			
-			
-			
-			while(rs.next()) {
-				
-				CustomDTO dto = new CustomDTO();
-				
-				dto.setId(rs.getInt("id"));
-				dto.setName(rs.getString("name"));
-				dto.setAge(rs.getInt("age"));
-				
-				lists.add(dto);
-			}
 		
-			rs.close();
-			conn.close();
-			pstmt.close();
-			
-		} catch (Exception e) {
-			// TODO: handle exception
-			System.out.println(e.toString());
-		}
-		
-		return lists;
 	}
 	
 	
@@ -194,7 +142,7 @@ public class CustomDAO {
 		}
 		
 		return result;
-	}
+	}*/
 	
 	
 	
